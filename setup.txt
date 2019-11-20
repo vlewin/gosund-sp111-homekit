@@ -1,0 +1,8 @@
+export SDK_PATH=`pwd`/esp-open-rtos;
+
+docker-run esp-rtos make -C examples/gosund_sp111 FLASH_SIZE=8 HOMEKIT_SPI_FLASH_BASE_ADDR=0x8c000 HOMEKIT_DEBUG=1 clean
+docker-run esp-rtos make -C examples/gosund_sp111 FLASH_SIZE=8 HOMEKIT_SPI_FLASH_BASE_ADDR=0x8c000 HOMEKIT_DEBUG=1 all
+
+esptool.py -p /dev/cu.usbserial-A50285BI --baud 115200 erase_flash;
+esptool.py -p /dev/cu.usbserial-A50285BI --baud 115200 write_flash -fs 8m -fm dout -ff 40m \
+        0x0 firmware_prebuilt/rboot.bin 0x1000 firmware_prebuilt/blank_config.bin 0x2000 ./firmware/gosund_sp111.bin
